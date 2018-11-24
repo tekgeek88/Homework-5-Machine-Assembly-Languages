@@ -1,0 +1,7 @@
+*.*
+!PrintLetters.bin
+!Guess.asm
+!Count.asm
+!*.md
+!*.pdf
+!.gitignore
