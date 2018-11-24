@@ -1,0 +1,6 @@
+; A machine language program that prints out the letters: ZYX..DCBAABCD....XYZ.
+; That's a total of 26 *2 = 52 letters. You must use one or two loops.
+; Carl Argabright
+; Ethan Cheatham
+; TCSS 371 - Fall 2018
+
