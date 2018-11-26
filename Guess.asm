@@ -1,150 +1,78 @@
 ;Guessing Game
 ;Ethan Cheatham
 
-
-
-;if you encounter non digit character, output invalid input.
-;stored value of 6
-;ask to guess between 0 and 9
-;invalid input still countes as guess, just output invalid input
-; uiser inputs and hits enter
-;asciu code x0A causes the cursor to go to the nextline NEWLINE
-;Assume that the user gets it right within 9 guesses.
-
 ;R0 - IN/OUT
 ;R1 - Used to validate input
 ;R2 - Stores number 6, number to guess
+;R3 - Keep track of loop count.
 ;R4 - Stores raw input
-
+;R5 - Temporary opreations.
 ;R6 - Stores result of adding 6 + two's complement of a guess.
 
-;R3 - Keep track of loop count. 9 to 1.
 
-
-;check if 9 guesses occured
-
-
-.ORIG x3000 ;Start program at x3000
+.ORIG x3000 ; Start program at x3000
 
 ADD R2, R2, #6 ; Store 6 to R2
 AND R3, R3, #0 ; Set R3 to 0 for checking number of guesses.
 
-BRnzp START
+BRnzp GUESSMSG
 
 
-
-START:
-	;Increment guesses
-	ADD R3, R3, #1
+GUESSMSG:
+	;Check if first guess (Guess count is zero)
 	
-	; Print guess message
-	LEA R0, GUESS 
-	PUTS 
-
-	; Get input character
-	
-	GETC
-	
-	
-	AND R4, R4, #0
-	ADD R4, R4, R0 ; Add R0 to R4	
-
-	OUT	
+	;Print Guess message
+	ADD R3, R3, #0
+	BRz FIRSTGUESS
+	BRp ANOTHERGUESS
+	HALT
 
 
-	LEA R0, NEWLINE ; New line after guess
+FIRSTGUESS:
+	;Print first guess message
+	LEA R0, GUESS
 	PUTS
-	
+	BRnzp LOOP
 
-
-
-	
-	LD R6, ASCII2 	
-	ADD R6, R6, R4
-
-	NOT R6, R6;
-	ADD R6, R6, #1
-
-
-
-
-	;Check input
-	LD R1, BOTTOM
-	AND R5, R5, #0
-	ADD R5, R5, R4
-	NOT R5, R4;
-	ADD R5, R5 #1
-
-	ADD R1, R1, R5
-
-	BRp INVALIDINPUT
-
-	LD R1, TOP
-	AND R5, R5, #0
-	ADD R5, R5, R4
-	NOT R5, R4;
-	ADD R5, R5 #1
-
-	ADD R1, R1, R5
-
-	BRn INVALIDINPUT
-
-
+ANOTHERGUESS: 
+	;Print another guess message
+	LEA R0, GUESSAGAIN
+	PUTS
+	BRnzp LOOP
 
 
 	
-
-
-
-	ADD R6, R2, R6
-	
-	
-	
-	BRp SMALLER
-	BRz CORRECT
-	BRn GREATER
-	
-AGAIN:
-
+LOOP:
 	;Check if nine guesses have occured.
 	AND R5, R5, #0
 	ADD R5, R5, #9
 
-	;2'S complement
-	NOT R5, R5
+	NOT R5, R5 ; 2'S complement
 	ADD R5, R5, #1
 
 	ADD R5, R5, R3
 
-	BRz CORRECT
-	
-
+	BRz CORRECT ; if number of guesses - 9 = 0, assume correct
 	
 
 	;Increment guesses
 	ADD R3, R3, #1
-	
-	; Print guess message
-	LEA R0, GUESSAGAIN
-	PUTS 
 
-	; Get input character
-	
+	;Get input character
 	GETC
 	
-	
-	AND R4, R4, #0
+	AND R4, R4, #0 
 	ADD R4, R4, R0 ; Add R0 to R4	
-
+	
+	;Display input
 	OUT	
 
-
-	LEA R0, NEWLINE ; New line after guess
+	LEA R0, NEWLINE ; New line after guess character
 	PUTS
 	
 
 
-
+	;Determine decimal value using negative ascii
 	
 	LD R6, ASCII2 	
 	ADD R6, R6, R4
@@ -154,39 +82,32 @@ AGAIN:
 
 
 
-	;Check input
+	;Check if input is in a valid range of accepted values
+
+	;Check lower bound
 	LD R1, BOTTOM
 	AND R5, R5, #0
 	ADD R5, R5, R4
 	NOT R5, R4;
 	ADD R5, R5 #1
-
 	ADD R1, R1, R5
-
 	BRp INVALIDINPUT
 
+	;Check upper bound
 	LD R1, TOP
 	AND R5, R5, #0
 	ADD R5, R5, R4
 	NOT R5, R4;
 	ADD R5, R5 #1
-
 	ADD R1, R1, R5
-
 	BRn INVALIDINPUT
 
 
-
-	
-
-	
-
-
-
+	;Add 2's complement of guess and 6
 	ADD R6, R2, R6
-	
-	
-	
+		
+	;Determine if guess is correct
+
 	BRp SMALLER
 	BRz CORRECT
 	BRn GREATER
@@ -194,23 +115,27 @@ AGAIN:
 
 
 GREATER:
+	;Display that the guess is too big
 	LEA R0, BIG
 	PUTS
-	BRnzp AGAIN	
+	BRnzp GUESSMSG
 
 SMALLER:
+	;Display that the guess is too small
 	LEA R0, SMALL
 	PUTS
-	BRnzp AGAIN
+	BRnzp GUESSMSG
 
 	
 INVALIDINPUT:
+	;Display the input is invalid
 	LEA R0, INVALID
 	PUTS
-	BRnzp AGAIN
+	BRnzp GUESSMSG
 	
 
 CORRECT:
+	;Display the guess is correct, stop program
 	LEA R0, CORRECT1
 	PUTS
 	LD R0, ASCII
