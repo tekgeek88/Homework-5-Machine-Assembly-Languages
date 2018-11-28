@@ -1,5 +1,6 @@
 ;Guessing Game
-;Ethan Cheatham
+; Ethan Cheatham
+; Carl Argabirght
 
 ;R0 - IN/OUT
 ;R1 - Used to validate input
