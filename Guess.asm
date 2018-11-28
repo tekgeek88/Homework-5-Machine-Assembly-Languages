@@ -6,14 +6,15 @@
 ;R2 - Stores number 6, number to guess
 ;R3 - Keep track of loop count.
 ;R4 - Stores raw input
-;R5 - Temporary opreations.
+;R5 - Temporary operations.
 ;R6 - Stores result of adding 6 + two's complement of a guess.
 
 
 .ORIG x3000 ; Start program at x3000
 
-ADD R2, R2, #6 ; Store 6 to R2
-AND R3, R3, #0 ; Set R3 to 0 for checking number of guesses.
+	AND R2, R2, #0 ; Make sure R2 always initializes to zero
+	ADD R2, R2, #6 ; Store 6 to R2
+	AND R3, R3, #0 ; Set R3 to 0 for checking number of guesses.
 
 BRnzp GUESSMSG
 
@@ -158,7 +159,8 @@ ASCII .FILL x0030
 ASCII2 .FILL xFFD0
 BOTTOM .FILL x0030
 TOP .FILL x0039
-
+
+
 
 HALT
 .END ;End of program
